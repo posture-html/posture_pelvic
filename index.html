@@ -89,7 +89,7 @@
   本網頁為【AI輔助健康姿勢偵測與矯正系統】偵測功能介面<br>
   </p>
 
-  <h2>📷 駝背偵測工具</h2>
+  <h2>偵測工具</h2>
 
   <button id="switchCamera">🔄 切換鏡頭</button><br>
   <video id="video" autoplay playsinline></video><br>
@@ -136,7 +136,7 @@
 
   // （可選）要不要做成下拉選單切換端點？
   // 先固定用駝背：
-  let currentEndpoint = "/hunchback";
+  let currentEndpoint = "/pelvic";
 
   let currentStream = null;
   let useFrontCamera = false;
@@ -231,10 +231,13 @@
       if (r.neck_angle !== undefined) lines.push(`頸部角度：${r.neck_angle}°`);
       //if (r.spine_angle!== undefined) lines.push(`脊椎角度：${r.spine_angle}°`);
       if (r.kyphosis   !== undefined) lines.push(`脊柱後凸：${r.kyphosis}°`);
-      if (r.higher     !== undefined) lines.push(`較高側：${r.higher}`);
       if (r.sl_ratio   !== undefined) lines.push(`肩膀高低差比例：${r.sl_ratio}`);
       if (r.sl_ratio_rel!==undefined) lines.push(`肩/髖相對比例：${r.sl_ratio_rel}`);
       if (r.sl_angle   !== undefined) lines.push(`肩線傾斜角：${r.sl_angle}°`);
+      if (r.pelvic_angle   !== undefined) lines.push(`骨盆前傾角度：${r.pelvic_angle}°`);
+      if (r.pelvic_tilt   !== undefined) lines.push(`骨盆傾斜程度：${r.pelvic_tilt}°`);
+      if (r.forward_ratio   !== undefined) lines.push(`身體前傾比例：${r.forward_ratio}°`);
+      if (r.knee_angle   !== undefined) lines.push(`膝關節角度：${r.knee_angle}°`);
 
       resultBox.innerHTML = "✅ 偵測完成：<br>" + lines.join("<br>");
 
