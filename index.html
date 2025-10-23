@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>體態偵測工具</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      margin: 0;
+      background-color: #f4f4f4;
+      text-align: center;
+    }
+    h2 {
+      color: #333;
+    }
+    video, canvas, img {
+      max-width: 100%;
+      height: auto;
+      margin-top: 10px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    button, input[type="file"] {
+      margin: 10px auto;
+      padding: 12px 18px;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: none;
+      background-color: #4CAF50;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #submitBtn {
+      background-color: #2196F3;
+    }
+    #submitBtn:hover {
+      background-color: #1976D2;
+    }
+    #result, #connectionResult {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* ✅ 新增：統一按鈕樣式 */
+    .action-button {
+      flex: 1 1 45%;
+      min-width: 140px;
+      max-width: 180px;
+      height: 48px;
+      background-color: #4CAF50;
+      color: white;
+      padding: 12px 16px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
+      text-decoration: none;
+    }
+
+    .action-button:hover {
+      background-color: #45a049;
+    }
+
+    @media screen and (min-width: 768px) {
+      body {
+        max-width: 700px;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <p style="font-size: 0.85rem; color: #666; margin-bottom: 6px; text-align: center;">
+  本網頁為【AI輔助健康姿勢偵測與矯正系統】偵測功能介面<br>
+  </p>
+
+  <h2>📷 駝背偵測工具</h2>
+
+  <button id="switchCamera">🔄 切換鏡頭</button><br>
+  <video id="video" autoplay playsinline></video><br>
+
+   <!--  拍照與選圖按鈕：左右排列 + 寬度一致 -->
+  <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
+    <button id="snap" class="action-button">
+      📸 拍照
+    </button>
+
+    <label for="uploadImage" class="action-button">
+      📁 選擇圖片
+    </label>
+  </div>
+
+  <!-- 隱藏 input -->
+  <input type="file" id="uploadImage" accept="image/*" style="display:none;">
+
+  <canvas id="canvas" style="display:none;"></canvas>
+  <img id="preview" alt="圖片預覽" /><br>
+
+  <button id="submitBtn">🚀 上傳圖片</button>
+
+  <div id="result"></div>
+
+
+<script>
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const preview = document.getElementById('preview');
+  const snapBtn = document.getElementById('snap');
+  const submitBtn = document.getElementById('submitBtn');
+  const switchCameraBtn = document.getElementById('switchCamera');
+  const uploadInput = document.getElementById('uploadImage');
+  const resultBox = document.getElementById('result');
+
+  const poseBtn = document.getElementById('poseBtn');
+
+
+  // ✅ 抽出 API 位置（本機/ ngrok / Render 三選一）
+  // const API_BASE = "http://127.0.0.1:5000";
+  // const API_BASE = "https://<你的-ngrok>.ngrok-free.app";
+  const API_BASE = "https://mammary-overwidely-braylen.ngrok-free.dev";
+
+  // （可選）要不要做成下拉選單切換端點？
+  // 先固定用駝背：
+  let currentEndpoint = "/hunchback";
+
+  let currentStream = null;
+  let useFrontCamera = false;
+  let imageBlob = null;
+
+  function resetPage() {
+    preview.src = "";
+    resultBox.innerHTML = "";
+    imageBlob = null;
+    startCamera();
+  }
+
+  async function startCamera() {
+    if (currentStream) currentStream.getTracks().forEach(t => t.stop());
+    try {
+      currentStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: useFrontCamera ? "user" : "environment" }
+      });
+      video.srcObject = currentStream;
+    } catch (err) { alert("❌ 攝影機錯誤：" + err.message); }
+  }
+
+  switchCameraBtn.onclick = () => { useFrontCamera = !useFrontCamera; startCamera(); };
+  startCamera();
+
+  snapBtn.onclick = () => {
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    preview.src = canvas.toDataURL('image/png');
+    canvas.toBlob(blob => {
+      imageBlob = blob;
+      submitBtn.scrollIntoView({ behavior: 'smooth' });
+    }, 'image/png');
+  };
+
+  uploadInput.onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      preview.src = ev.target.result;
+      preview.onload = () => setTimeout(() => submitBtn.scrollIntoView({ behavior: 'smooth' }), 100);
+    };
+    reader.readAsDataURL(file);
+    imageBlob = file;
+  };
+
+  //  這裡改：解析 result 物件，而不是把 result 當字串
+  submitBtn.onclick = async () => {
+    if (!imageBlob) { alert("請先拍照或選擇圖片！"); return; }
+  
+    // UI 提示
+    resultBox.innerHTML = "偵測中，請稍後...";
+    submitBtn.disabled = true;
+  
+    try {
+      // ---------- (1) 先要 JSON 指標 ----------
+      const fd1 = new FormData();
+      fd1.append('file', imageBlob, 'upload.png');
+  
+      const resJson = await fetch(`${API_BASE}${currentEndpoint}`, {
+        method: 'POST',
+        body: fd1
+      });
+  
+      const ct = resJson.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        const txt = await resJson.text();
+        throw new Error(`非 JSON 回應：${resJson.status} ${txt.slice(0,200)}`);
+      }
+  
+      const data = await resJson.json();
+      if (!data.success) {
+        const msg = "❌ 預測失敗：" + (data.error || "未知錯誤");
+        resultBox.innerHTML = msg;
+        alert(msg);
+        return;
+      }
+
+      const r = data.result;
+      // r.level 例如：正常 / 輕度駝背 / 重度駝背（或高低肩）
+      // r 其他欄位：hr / neck_angle / spine_angle / kyphosis / score / side（駝背）
+      // 高低肩則是：sl_ratio / sl_ratio_rel / sl_angle / score / level / higher（若你有回傳）
+
+      // ✅ 美觀輸出（自動偵測有哪幾個欄位）
+      const lines = [];
+      if (r.side       !== undefined) lines.push(`面向：${r.side}`);
+      if (r.level      !== undefined) lines.push(`等級：${r.level}`);
+      //if (r.score      !== undefined) lines.push(`分數：${r.score}`);
+      if (r.hr         !== undefined) lines.push(`頭前傾比例：${r.hr}`);
+      if (r.neck_angle !== undefined) lines.push(`頸部角度：${r.neck_angle}°`);
+      //if (r.spine_angle!== undefined) lines.push(`脊椎角度：${r.spine_angle}°`);
+      if (r.kyphosis   !== undefined) lines.push(`脊柱後凸：${r.kyphosis}°`);
+      if (r.higher     !== undefined) lines.push(`較高側：${r.higher}`);
+      if (r.sl_ratio   !== undefined) lines.push(`肩膀高低差比例：${r.sl_ratio}`);
+      if (r.sl_ratio_rel!==undefined) lines.push(`肩/髖相對比例：${r.sl_ratio_rel}`);
+      if (r.sl_angle   !== undefined) lines.push(`肩線傾斜角：${r.sl_angle}°`);
+
+      resultBox.innerHTML = "✅ 偵測完成：<br>" + lines.join("<br>");
+
+      // 可選：結果通知
+      alert(`✅ 偵測完成：${r.level || '—'}`);
+
+      const fd2 = new FormData();
+      fd2.append('file', imageBlob, 'upload.jpg');
+  
+      const resImg = await fetch(`${API_BASE}/pose_img?mode=plain`, {
+        method: 'POST',
+        body: fd2
+      });
+      if (!resImg.ok) throw new Error(`骨架圖 HTTP ${resImg.status}`);
+  
+      const blob = await resImg.blob();
+      if (preview.src) URL.revokeObjectURL(preview.src);
+      preview.src = URL.createObjectURL(blob);
+
+    } catch (err) {
+      const msg = "❌ 請求失敗：" + err.message;
+      resultBox.innerHTML = msg;
+      alert(msg);
+    }
+  };
+</script>
+
+</body>
+</html>
