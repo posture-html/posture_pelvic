@@ -239,7 +239,7 @@
   <canvas id="canvas" style="display:none;"></canvas>
   <img id="preview" alt="圖片預覽" /><br>
 
-  <button id="submitBtn">上傳圖片</button>
+  <button id="submitBtn">🚀 上傳圖片</button>
 
   <div id="result"></div>
 
@@ -332,7 +332,7 @@
     if (r.knee_angle   !== undefined) lines.push(`膝關節角度：${r.knee_angle}°`);
 
     for (const k of Object.keys(r)) {
-      if (['side','level','score','hr','neck_angle','spine_angle','kyphosis','higher','sl_ratio','sl_ratio_rel','sl_angle'].includes(k)) continue;
+      if (['side','level','score','hr','neck_angle','spine_angle','kyphosis','higher','sl_ratio','sl_ratio_rel','sl_angle','pelvic_angle','pelvic_tilt','forward_ratio','knee_angle'].includes(k)) continue;
       rows.push([k, r[k]]);
     }
 
