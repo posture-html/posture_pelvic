@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>體態偵測工具</title>
-  <!-- 可選字體：無網也不影響功能 -->
+  <!-- 可選：Google Font（缺網也不影響功能） -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-
   <style>
   :root {
     --text: #0f172a;
@@ -24,13 +23,16 @@
     --shadow-lg: 0 12px 36px rgba(2, 6, 23, 0.12);
   }
 
-  * { box-sizing: border-box; }
+  * {
+    box-sizing: border-box;
+  }
 
   body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     color: var(--text);
-    background: #ffffff; /* 純白背景 */
+    background: #ffffff; /* ✅ 純白背景 */
     padding: 16px 14px 24px;
     text-align: center;
   }
@@ -58,7 +60,9 @@
     box-shadow: var(--shadow);
   }
 
-  video, canvas, img {
+  video,
+  canvas,
+  img {
     width: 100%;
     max-width: 100%;
     height: auto;
@@ -69,8 +73,10 @@
     box-shadow: var(--shadow);
   }
 
-  /* 按鈕統一樣式 */
-  button, input[type="file"], .action-button {
+  /* ===== 按鈕統一樣式 ===== */
+  button,
+  input[type="file"],
+  .action-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -83,12 +89,14 @@
     cursor: pointer;
     transition: transform 0.12s ease, box-shadow 0.18s ease, filter 0.18s ease;
   }
-  button:hover, .action-button:hover {
+
+  button:hover,
+  .action-button:hover {
     transform: translateY(-1px);
     box-shadow: var(--shadow-lg);
   }
 
-  /* 拍照與選擇圖片：同款綠色 */
+  /* ✅ 拍照 & 選擇圖片：相同綠色樣式 */
   .action-button {
     flex: 1 1 45%;
     min-width: 150px;
@@ -99,16 +107,18 @@
     border: none;
   }
 
-  /* 上傳圖片：藍色主按鈕、全寬 */
+  /* ✅ 上傳圖片：藍色主按鈕，全寬 */
   #submitBtn {
     width: 100%;
     background: linear-gradient(180deg, var(--primary), var(--primary-2));
     color: #fff;
     border: none;
   }
-  #submitBtn:hover { filter: brightness(1.05); }
 
-  /* 切換鏡頭：次要 */
+  #submitBtn:hover {
+    filter: brightness(1.05);
+  }
+
   #switchCamera {
     width: 100%;
     background: #f1f5f9;
@@ -116,14 +126,15 @@
     border: 1px solid rgba(15, 23, 42, 0.08);
   }
 
-  #result, #connectionResult {
+  #result,
+  #connectionResult {
     margin-top: 16px;
     font-weight: 600;
     color: var(--text);
     text-align: left;
   }
 
-  /* 結果表格 */
+  /* ===== 結果表格 ===== */
   .result-card {
     margin-top: 16px;
     background: #ffffff;
@@ -133,57 +144,91 @@
     overflow: hidden;
     text-align: left;
   }
+
   .result-title {
     padding: 12px 14px;
     font-weight: 800;
     background: #f9fafb;
     border-bottom: 1px solid #eef1f6;
   }
+
   .result-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.96rem;
   }
-  .result-table th, .result-table td {
+
+  .result-table th,
+  .result-table td {
     padding: 11px 14px;
     border-bottom: 1px solid #f1f3f7;
     vertical-align: top;
     word-break: break-word;
   }
+
   .result-table th {
     width: 44%;
     color: #334155;
     background: #fbfcff;
     font-weight: 700;
   }
-  .result-table tr:last-child th, .result-table tr:last-child td { border-bottom: none; }
 
-  /* 手機優化 */
+  .result-table tr:last-child th,
+  .result-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  /* ===== 響應式設計（手機優化） ===== */
   @media (max-width: 420px) {
-    body { padding: 12px 10px 20px; }
-    h2 { font-size: 1.2rem; padding: 8px 12px; }
-    .action-button { min-width: 100%; margin-bottom: 8px; }
-    .result-table { font-size: 0.94rem; }
-    .result-table th, .result-table td { padding: 10px 12px; }
-  }
-  @media (min-width: 768px) {
-    body { padding-top: 24px; }
-    body > * { max-width: 720px; }
-  }
-  </style>
-</head>
+    body {
+      padding: 12px 10px 20px;
+    }
 
+    h2 {
+      font-size: 1.2rem;
+      padding: 8px 12px;
+    }
+
+    .action-button {
+      min-width: 100%;
+      margin-bottom: 8px;
+    }
+
+    .result-table {
+      font-size: 0.94rem;
+    }
+
+    .result-table th,
+    .result-table td {
+      padding: 10px 12px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    body {
+      padding-top: 24px;
+    }
+
+    body > * {
+      max-width: 720px;
+    }
+  }
+</style>
+
+
+</head>
 <body>
+
   <p style="font-size: 0.9rem; color: #666; margin-bottom: 6px; text-align: center;">
     本網頁為【AI輔助健康姿勢偵測與矯正系統】偵測功能介面<br>
   </p>
 
   <h2>骨盆前傾偵測工具</h2>
 
-  <button id="switchCamera">切換鏡頭</button><br>
+  <button id="switchCamera">🔄 切換鏡頭</button><br>
   <video id="video" autoplay playsinline></video><br>
 
-  <!-- 按鈕列 -->
+  <!-- 保持你原本的排列（不動 inline style 與 DOM） -->
   <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin-top: 16px; flex-wrap: wrap;">
     <button id="snap" class="action-button">拍照</button>
     <label for="uploadImage" class="action-button">選擇圖片</label>
@@ -194,7 +239,7 @@
   <canvas id="canvas" style="display:none;"></canvas>
   <img id="preview" alt="圖片預覽" /><br>
 
-  <button id="submitBtn">上傳圖片</button>
+  <button id="submitBtn">🚀 上傳圖片</button>
 
   <div id="result"></div>
 
@@ -207,9 +252,8 @@
   const switchCameraBtn = document.getElementById('switchCamera');
   const uploadInput = document.getElementById('uploadImage');
   const resultBox = document.getElementById('result');
-  const poseBtn = document.getElementById('poseBtn'); // 若不存在也不影響
+  const poseBtn = document.getElementById('poseBtn');
 
-  // API 端點
   // const API_BASE = "http://127.0.0.1:5000";
   // const API_BASE = "https://<你的-ngrok>.ngrok-free.app";
   const API_BASE = "https://mammary-overwidely-braylen.ngrok-free.dev";
@@ -233,9 +277,7 @@
         video: { facingMode: useFrontCamera ? "user" : "environment" }
       });
       video.srcObject = currentStream;
-    } catch (err) {
-      alert("攝影機錯誤：" + err.message);
-    }
+    } catch (err) { alert("❌ 攝影機錯誤：" + err.message); }
   }
 
   switchCameraBtn.onclick = () => { useFrontCamera = !useFrontCamera; startCamera(); };
@@ -264,7 +306,6 @@
     imageBlob = file;
   };
 
-  // 結果表格渲染（含骨盆欄位）
   function renderResultTable(r) {
     const fmt = (v, opt = {}) => {
       if (v === undefined || v === null) return '—';
@@ -276,7 +317,6 @@
     };
 
     const rows = [];
-    // 駝背 / 高低肩
     if (r.side !== undefined)         rows.push(['面向', r.side]);
     if (r.level !== undefined)        rows.push(['等級', r.level]);
     if (r.hr !== undefined)           rows.push(['頭前傾比例', fmt(r.hr, { dp: 3 })]);
@@ -286,7 +326,6 @@
     if (r.sl_ratio !== undefined)     rows.push(['肩膀高低差比例', fmt(r.sl_ratio, { dp: 3 })]);
     if (r.sl_ratio_rel !== undefined) rows.push(['肩/髖相對比例', fmt(r.sl_ratio_rel, { dp: 3 })]);
     if (r.sl_angle !== undefined)     rows.push(['肩線傾斜角', fmt(r.sl_angle, { dp: 1, suffix: '°' })]);
-
     // 骨盆前傾
     if (r.pelvic_angle   !== undefined) rows.push(['骨盆前傾角度', fmt(r.pelvic_angle, { dp: 1, suffix: '°' })]);
     if (r.pelvic_tilt    !== undefined) rows.push(['骨盆傾斜程度', fmt(r.pelvic_tilt,  { dp: 1, suffix: '°' })]);
@@ -317,55 +356,55 @@
     resultBox.innerHTML = tableHTML;
   }
 
-  // 上傳流程：先顯示骨架，再顯示結果（無表情符號）
   submitBtn.onclick = async () => {
-    if (!imageBlob) { alert("請先拍照或選擇圖片。"); return; }
-    resultBox.textContent = "正在產生骨架圖...";
+    if (!imageBlob) { alert("請先拍照或選擇圖片！"); return; }
+    resultBox.innerHTML = "偵測中，請稍後...";
     submitBtn.disabled = true;
 
     try {
-      // 同時送出兩個請求
-      const fdImg = new FormData();
-      fdImg.append('file', imageBlob, 'upload.jpg');
-      const imgPromise = fetch(`${API_BASE}/pose_img?mode=plain`, {
+      const fd1 = new FormData();
+      fd1.append('file', imageBlob, 'upload.png');
+
+      const resJson = await fetch(`${API_BASE}${currentEndpoint}`, {
         method: 'POST',
-        body: fdImg
-      }).then(async res => {
-        if (!res.ok) throw new Error(`骨架圖 HTTP ${res.status}`);
-        const blob = await res.blob();
-        if (preview.src) URL.revokeObjectURL(preview.src);
-        preview.src = URL.createObjectURL(blob);
-        preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        body: fd1
       });
 
-      const fdJson = new FormData();
-      fdJson.append('file', imageBlob, 'upload.png');
-      const jsonPromise = fetch(`${API_BASE}${currentEndpoint}`, {
-        method: 'POST',
-        body: fdJson
-      }).then(async res => {
-        const ct = res.headers.get('content-type') || '';
-        if (!ct.includes('application/json')) {
-          const txt = await res.text();
-          throw new Error(`非 JSON 回應：${res.status} ${txt.slice(0,200)}`);
-        }
-        const data = await res.json();
-        if (!data.success) throw new Error(data.error || "未知錯誤");
-        return data.result;
-      });
+      const ct = resJson.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        const txt = await resJson.text();
+        throw new Error(`非 JSON 回應：${resJson.status} ${txt.slice(0,200)}`);
+      }
 
-      // 先顯示骨架
-      await imgPromise;
+      const data = await resJson.json();
+      if (!data.success) {
+        const msg = "❌ 預測失敗：" + (data.error || "未知錯誤");
+        resultBox.innerHTML = msg;
+        alert(msg);
+        submitBtn.disabled = false;
+        return;
+      }
 
-      // 再顯示結果
-      resultBox.textContent = "正在計算指標...";
-      const r = await jsonPromise;
+      const r = data.result;
       renderResultTable(r);
-      alert(`偵測完成：${r.level || '—'}`);
+      alert(`✅ 偵測完成：${r.level || '—'}`);
+
+      const fd2 = new FormData();
+      fd2.append('file', imageBlob, 'upload.jpg');
+
+      const resImg = await fetch(`${API_BASE}/pose_img?mode=plain`, {
+        method: 'POST',
+        body: fd2
+      });
+      if (!resImg.ok) throw new Error(`骨架圖 HTTP ${resImg.status}`);
+
+      const blob = await resImg.blob();
+      if (preview.src) URL.revokeObjectURL(preview.src);
+      preview.src = URL.createObjectURL(blob);
 
     } catch (err) {
-      const msg = "請求失敗：" + err.message;
-      resultBox.textContent = msg;
+      const msg = "❌ 請求失敗：" + err.message;
+      resultBox.innerHTML = msg;
       alert(msg);
     } finally {
       submitBtn.disabled = false;
