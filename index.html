@@ -284,8 +284,6 @@
           (r.pelvic_tilt == null ? "—" : (r.pelvic_tilt > 20 ? "重度" : r.pelvic_tilt > 14 ? "中度" : r.pelvic_tilt > 8 ? "輕度" : "正常")),
       fr: (r.lvl_text && r.lvl_text["身體前傾比例"]) ??
           (r.forward_ratio == null ? "—" : (r.forward_ratio > 0.35 ? "重度" : r.forward_ratio > 0.25 ? "中度" : r.forward_ratio > 0.15 ? "輕度" : "正常")),
-      ka: (r.lvl_text && r.lvl_text["膝關節角度"]) ??
-          (r.knee_angle == null ? "—" : (r.knee_angle < 130 ? "重度" : r.knee_angle < 150 ? "中度" : r.knee_angle < 165 ? "輕度" : "正常")),
     };
 
     // 基本列（面向）
@@ -298,7 +296,6 @@
       ["骨盆前傾角度", fmt(r.pelvic_angle, { dp: 1, suffix: "°" }), lv.pa],
       ["骨盆傾斜程度", fmt(r.pelvic_tilt,  { dp: 1, suffix: "°" }), lv.pt],
       ["身體前傾比例", fmt(r.forward_ratio, { dp: 3 }),             lv.fr],
-      ["膝關節角度",   fmt(r.knee_angle,    { dp: 1, suffix: "°" }), lv.ka],
     ];
 
     // 額外欄位（若回傳有其他鍵）
